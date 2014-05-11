@@ -27,37 +27,7 @@ namespace Option_Parser
                 Options.Add(RemoveWhitespace(enumerated[0]), RemoveWhitespace(enumerated[1]));
             }
         }
-        /*
-        public bool GetOptionValueBoolean(string OptionName)
-        {
-            try
-            {
-                return Convert.ToBoolean(Options[OptionName]);
-            }
-            catch { }
-            return false;
-        }
-
-        public int GetOptionValueInteger(string OptionName)
-        {
-            try
-            {
-                return Convert.ToInt32(Options[OptionName]);
-            }
-            catch { }
-            return 0;
-        }
-
-        public string GetOptionValue(string OptionName)
-        {
-            try
-            {
-                return Options[OptionName];
-            }
-            catch { }
-            return null;
-        }
-        */
+		
         public T GetOptionValue<T>(string option, Func<string, T> converter)
         {
             try
