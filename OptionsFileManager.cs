@@ -27,7 +27,7 @@ namespace Option_Parser
                 Options.Add(RemoveWhitespace(enumerated[0]), RemoveWhitespace(enumerated[1]));
             }
         }
-
+        /*
         public bool GetOptionValueBoolean(string OptionName)
         {
             try
@@ -56,6 +56,24 @@ namespace Option_Parser
             }
             catch { }
             return null;
+        }
+        */
+        public T GetOptionValue<T>(string option, Func<string, T> converter)
+        {
+            try
+            {
+                string value = Options[option];
+                if (String.IsNullOrWhiteSpace(value))
+                {
+                    return default(T);
+                }
+                return converter(value);
+            }
+            catch
+            {
+
+            }
+            return default(T);
         }
 
         public bool SetOptionValue(string OptionName, dynamic value)
