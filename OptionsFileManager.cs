@@ -11,84 +11,64 @@ using System.IO;
 
 namespace Option_Parser
 {
-    public class Option
-    {
-        public string opName;
-        public dynamic opValue;
-
-        public Option(string OptionName, dynamic optionValue)
-        {
-            this.opName = OptionName;
-            this.opValue = optionValue;
-        }
-    }
     public class OptionsFileManager
     {
+
+        Dictionary<string, string> Options = new Dictionary<string, string>();
         public string RemoveWhitespace(string input){
             return String.Join("", input.Where(c => !char.IsWhiteSpace(c)));
         }
-        public List<Option> Options = new List<Option>();
         public OptionsFileManager(string fName)
         {
             string[] FileOptions = System.IO.File.ReadAllLines(fName);
             foreach(string Option in FileOptions){
                 Option.Replace(" ", string.Empty);
                 string[] enumerated = Option.Split('=');
-                Options.Add(new Option(RemoveWhitespace(enumerated[0]), RemoveWhitespace(enumerated[1])));
+                Options.Add(RemoveWhitespace(enumerated[0]), RemoveWhitespace(enumerated[1]));
             }
         }
 
         public bool GetOptionValueBoolean(string OptionName)
         {
-            foreach (Option op in Options.ToArray())
+            try
             {
-                try
-                {
-                    if (op.opName == OptionName)
-                        return Convert.ToBoolean(op.opValue);
-                }
-                catch { }
+                return Convert.ToBoolean(Options[OptionName]);
             }
+            catch { }
             return false;
         }
 
         public int GetOptionValueInteger(string OptionName)
         {
-            foreach (Option op in Options.ToArray())
+            try
             {
-                try
-                {
-                    if (op.opName == OptionName)
-                        return Convert.ToInt32(op.opValue);
-                }
-                catch { }
+                return Convert.ToInt32(Options[OptionName]);
             }
+            catch { }
             return 0;
         }
 
         public string GetOptionValue(string OptionName)
         {
-            foreach (Option op in Options.ToArray())
+            try
             {
-                if (op.opName == OptionName)
-                    return op.opValue;
+                return Options[OptionName];
             }
+            catch { }
             return null;
         }
 
         public bool SetOptionValue(string OptionName, dynamic value)
         {
             bool set = false;
-            foreach (Option op in Options.ToArray())
+            try
             {
-                if (op.opName == OptionName)
-                {
-                    set = true;
-                    op.opValue = value;
-                }
+                Options[OptionName] = Convert.ToString(value);
+                set = true;
             }
+            catch { }
             if (!set)
-                Options.Add(new Option(OptionName, value));
+                Options.Add(OptionName, Convert.ToString(value));
             return true;
         }
 
@@ -97,8 +77,8 @@ namespace Option_Parser
             try
             {
                 string finArray = string.Empty;
-                foreach (Option op in Options.ToArray())
-                    finArray += op.opName + "=" + Convert.ToString(op.opValue) + "\n";
+                foreach (KeyValuePair<string, string> op in Options.ToArray())
+                    finArray += op.Key+ "=" + Convert.ToString(op.Value) + "\n";
                 System.IO.File.WriteAllBytes(newFileName, System.Text.ASCIIEncoding.ASCII.GetBytes(finArray));
                 return true;
             }
